@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment # used to achieve high availaibility with zero downtime
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkins-label
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2 
+      maxUnavailable: 0 
+  selector:
+    matchLabels:
+      app: label-all
+  template:
+    metadata:
+      name: jenkins
+      labels:
+        app: label-all
+    spec:
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts
+      nodeSelector: 
+        name: worker1
+      tolerations:
+        - key: "colour"
+          operator: "Equal"
+          value: "red"
+          effect: "NoSchedule"
