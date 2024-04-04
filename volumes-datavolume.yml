@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment # used to achieve high availaibility with zero downtime
+metadata:
+  name: jenkins-deployment
+  namespace: mynamespace
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: label-all
+  template:
+    metadata:
+      name: jenkins
+      labels:
+        app: label-all
+    spec:
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: my-volume-jenkins
+      volumes:
+        - name: my-volume-jenkins
+          hostPath:
+            path: /root/jenkins_data
+            type: Directory
